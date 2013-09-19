@@ -1,4 +1,6 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 //these create the 'provided' scope, mainly for the servlet dependency
 apply plugin: 'propdeps'
