@@ -24,7 +24,8 @@ Or maybe you're just curious to see what a Spring-implemented RESTful web servic
 * About thirty minutes for each section. You should be able to comfortably work your way through the entire tutorial during your lunch break in a week (or do it all on the weekend!)
 * An installation of the [Gradle](http://www.gradle.org) build tool, version 1.6 or later.
 * A copy of the code (available either by [git][u-git] or a [downloadable zip file](https://github.com/spring-guides/tut-rest/archive/master.zip)).
-* An IDE of your choice; Spring recommends [Spring Tool Suite](http://www.springsource.org/sts), which is a [free download](http://www.springsource.org/sts).
+* An IDE of your choice. Spring recommends [Spring Tool Suite](http://spring.io/tools/sts/all), which is a free download.
+
 
 ### Downloading and running the code
 
