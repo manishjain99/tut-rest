@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardOrderJSON;
+import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardRepoJSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,17 +43,17 @@ public class RestDomainIntegrationTest {
   }
 
   @Test
-  public void addANewOrderToTheSystem() throws Exception  {
+  public void addANewRepoToTheSystem() throws Exception  {
     this.mockMvc.perform(
-            post("/aggregators/orders")
-                    .content(standardOrderJSON())
+            post("/aggregators/repos")
+                    .content(standardRepoJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isCreated());
 
     this.mockMvc.perform(
-            get("/aggregators/orders")
+            get("/aggregators/repos")
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())

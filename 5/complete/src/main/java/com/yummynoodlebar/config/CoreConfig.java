@@ -1,10 +1,10 @@
 package com.yummynoodlebar.config;
 
-import com.yummynoodlebar.core.domain.Order;
-import com.yummynoodlebar.core.repository.OrdersMemoryRepository;
-import com.yummynoodlebar.core.repository.OrdersRepository;
-import com.yummynoodlebar.core.services.OrderEventHandler;
-import com.yummynoodlebar.core.services.OrderService;
+import com.yummynoodlebar.core.domain.Repo;
+import com.yummynoodlebar.core.repository.ReposMemoryRepository;
+import com.yummynoodlebar.core.repository.RepoRepository;
+import com.yummynoodlebar.core.services.RepoEventHandler;
+import com.yummynoodlebar.core.services.RepoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,13 +16,13 @@ public class CoreConfig {
 
 
   @Bean
-  public OrderService createService(OrdersRepository repo) {
-    return new OrderEventHandler(repo);
+  public RepoService createService(RepoRepository repo) {
+    return new RepoEventHandler(repo);
   }
 
   @Bean
-  public OrdersRepository createRepo() {
-    return new OrdersMemoryRepository(new HashMap<UUID, Order>());
+  public RepoRepository createRepo() {
+    return new ReposMemoryRepository(new HashMap<UUID, Repo>());
   }
 
 }

@@ -1,7 +1,7 @@
 package com.yummynoodlebar.rest.controller.fixture;
 
-import com.yummynoodlebar.core.events.orders.*;
-import com.yummynoodlebar.rest.domain.Order;
+import com.yummynoodlebar.core.events.repos.*;
+import com.yummynoodlebar.rest.domain.Repo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,36 +18,36 @@ import java.util.UUID;
 public class RestDataFixture {
   public static final String YUMMY_ITEM = "yummy1";
 
-  public static AllOrdersEvent allOrders() {
-    List<OrderDetails> orders = new ArrayList<OrderDetails>();
+  public static AllReposEvent allRepos() {
+    List<RepoDetails> repos = new ArrayList<RepoDetails>();
 
-    orders.add(standardOrderDetails());
-    orders.add(standardOrderDetails());
-    orders.add(standardOrderDetails());
+    repos.add(standardRepoDetails());
+    repos.add(standardRepoDetails());
+    repos.add(standardRepoDetails());
 
-    return new AllOrdersEvent(orders);
+    return new AllReposEvent(repos);
   }
 
-  public static Order standardOrder() {
-    Order order = new Order();
+  public static Repo standardRepo() {
+    Repo repo = new Repo();
 
-    order.setItems(Collections.singletonMap(YUMMY_ITEM, 12));
+    repo.setItems(Collections.singletonMap(YUMMY_ITEM, 12));
 
-    return order;
+    return repo;
   }
 
-  public static OrderDetails customKeyOrderDetails(UUID key) {
-    OrderDetails orderdetails = new OrderDetails(key);
+  public static RepoDetails customKeyRepoDetails(UUID key) {
+    RepoDetails repodetails = new RepoDetails(key);
 
-    orderdetails.setOrderItems(Collections.singletonMap(YUMMY_ITEM, 12));
+    repodetails.setRepoItems(Collections.singletonMap(YUMMY_ITEM, 12));
 
-    return orderdetails;
+    return repodetails;
   }
-  public static OrderDetails standardOrderDetails() {
-    return customKeyOrderDetails(UUID.randomUUID());
+  public static RepoDetails standardRepoDetails() {
+    return customKeyRepoDetails(UUID.randomUUID());
   }
 
-  public static String standardOrderJSON() {
+  public static String standardRepoJSON() {
     return "{ \"items\": { \"yummy1\": 12, \"yummy15\": 42 } }";
   }
 }
