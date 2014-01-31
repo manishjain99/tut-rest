@@ -1,17 +1,19 @@
 package com.yummynoodlebar.rest.domain;
 
-import com.yummynoodlebar.core.events.repos.RepoStatusDetails;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
-import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodlebar.core.events.repos.RepoStatusDetails;
 
 @XmlRootElement
 public class RepoStatus {
 
   @XmlElement
-  private UUID repoId;
+  private RepoId repoId;
 
   @XmlElement
   private Date statusDate;
@@ -19,7 +21,7 @@ public class RepoStatus {
   @XmlElement
   private String status;
 
-  public static RepoStatus fromRepoStatusDetails(UUID key, RepoStatusDetails repoDetails) {
+  public static RepoStatus fromRepoStatusDetails(RepoId key, RepoStatusDetails repoDetails) {
     RepoStatus status = new RepoStatus();
 
     status.repoId = key;
@@ -28,8 +30,8 @@ public class RepoStatus {
 
     return status;
   }
-
-  public UUID getRepoId() {
+  @JsonIgnore
+  public RepoId getRepoId() {
     return repoId;
   }
 

@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.yummynoodlebar.core.domain.Repo;
-import com.yummynoodlebar.core.domain.RepoStatus;
+import com.yummynoodelbar.common.RepoStatus;
+import com.yummynoodlebar.core.domain.RepoCore;
 import com.yummynoodlebar.core.events.repos.AllReposEvent;
 import com.yummynoodlebar.core.events.repos.CreateRepoEvent;
 import com.yummynoodlebar.core.events.repos.DeleteRepoEvent;
-import com.yummynoodlebar.core.events.repos.RepoUpdatedEvent;
 import com.yummynoodlebar.core.events.repos.RepoCreatedEvent;
 import com.yummynoodlebar.core.events.repos.RepoDeletedEvent;
 import com.yummynoodlebar.core.events.repos.RepoDetails;
 import com.yummynoodlebar.core.events.repos.RepoDetailsEvent;
 import com.yummynoodlebar.core.events.repos.RepoStatusEvent;
+import com.yummynoodlebar.core.events.repos.RepoUpdatedEvent;
 import com.yummynoodlebar.core.events.repos.RequestAllReposEvent;
 import com.yummynoodlebar.core.events.repos.RequestRepoDetailsEvent;
 import com.yummynoodlebar.core.events.repos.RequestRepoStatusEvent;
@@ -31,19 +31,19 @@ public class RepoEventHandler implements RepoService {
 
   @Override
   public RepoCreatedEvent createRepo(CreateRepoEvent createRepoEvent) {
-    Repo repo = Repo.fromRepoDetails(createRepoEvent.getDetails());
+    RepoCore repo = new RepoCore(createRepoEvent.getDetails());
 
-    repo.addStatus(new RepoStatus(new Date(), "Repo Created"));
+    repo.setStatus(new RepoStatus(new Date(), "Repo Created"));
 
     repo = reposRepository.save(repo);
 
-    return new RepoCreatedEvent(repo.getKey(), repo.toRepoDetails());
+    return new RepoCreatedEvent(repo.getRepoId(), repo.toRepoDetails());
   }
 
   @Override
   public AllReposEvent requestAllRepos(RequestAllReposEvent requestAllCurrentReposEvent) {
     List<RepoDetails> generatedDetails = new ArrayList<RepoDetails>();
-    for (Repo repo : reposRepository.findAll()) {
+    for (RepoCore repo : reposRepository.findAll()) {
       generatedDetails.add(repo.toRepoDetails());
     }
     return new AllReposEvent(generatedDetails);
@@ -52,7 +52,7 @@ public class RepoEventHandler implements RepoService {
   @Override
   public RepoDetailsEvent requestRepoDetails(RequestRepoDetailsEvent requestRepoDetailsEvent) {
 
-    Repo repo = reposRepository.findById(requestRepoDetailsEvent.getKey());
+    RepoCore repo = reposRepository.findById(requestRepoDetailsEvent.getKey());
 
     if (repo == null) {
       return RepoDetailsEvent.notFound(requestRepoDetailsEvent.getKey());
@@ -71,7 +71,7 @@ public class RepoEventHandler implements RepoService {
   @Override
   public RepoDeletedEvent deleteRepo(DeleteRepoEvent deleteRepoEvent) {
 
-    Repo repo = reposRepository.findById(deleteRepoEvent.getKey());
+    RepoCore repo = reposRepository.findById(deleteRepoEvent.getKey());
 
     if (repo == null) {
       return RepoDeletedEvent.notFound(deleteRepoEvent.getKey());
@@ -92,7 +92,7 @@ public class RepoEventHandler implements RepoService {
 
   @Override
   public RepoStatusEvent requestRepoStatus(RequestRepoStatusEvent requestRepoDetailsEvent) {
-    Repo repo = reposRepository.findById(requestRepoDetailsEvent.getKey());
+    RepoCore repo = reposRepository.findById(requestRepoDetailsEvent.getKey());
 
     if (repo == null) {
       return RepoStatusEvent.notFound(requestRepoDetailsEvent.getKey());

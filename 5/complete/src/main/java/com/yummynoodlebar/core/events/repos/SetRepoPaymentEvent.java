@@ -1,20 +1,19 @@
 package com.yummynoodlebar.core.events.repos;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.UpdateEvent;
-
-import java.util.UUID;
 
 public class SetRepoPaymentEvent extends UpdateEvent {
 
-  private UUID key;
+  private RepoId key;
   private PaymentDetails paymentDetails;
 
-  public SetRepoPaymentEvent(UUID key, PaymentDetails paymentDetails) {
+  public SetRepoPaymentEvent(RepoId key, PaymentDetails paymentDetails) {
     this.key = key;
     this.paymentDetails = paymentDetails;
   }
 
-  public UUID getKey() {
+  public RepoId getKey() {
     return key;
   }
 

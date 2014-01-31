@@ -1,23 +1,22 @@
 package com.yummynoodlebar.core.events.repos;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.ReadEvent;
 
-import java.util.UUID;
-
 public class RepoDetailsEvent extends ReadEvent {
-  private UUID key;
+  private RepoId key;
   private RepoDetails repoDetails;
 
-  private RepoDetailsEvent(UUID key) {
+  private RepoDetailsEvent(RepoId key) {
     this.key = key;
   }
 
-  public RepoDetailsEvent(UUID key, RepoDetails repoDetails) {
+  public RepoDetailsEvent(RepoId key, RepoDetails repoDetails) {
     this.key = key;
     this.repoDetails = repoDetails;
   }
 
-  public UUID getKey() {
+  public RepoId getKey() {
     return key;
   }
 
@@ -25,7 +24,7 @@ public class RepoDetailsEvent extends ReadEvent {
     return repoDetails;
   }
 
-  public static RepoDetailsEvent notFound(UUID key) {
+  public static RepoDetailsEvent notFound(RepoId key) {
     RepoDetailsEvent ev = new RepoDetailsEvent(key);
     ev.entityFound=false;
     return ev;

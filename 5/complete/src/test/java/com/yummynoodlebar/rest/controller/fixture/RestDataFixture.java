@@ -1,12 +1,12 @@
 package com.yummynoodlebar.rest.controller.fixture;
 
-import com.yummynoodlebar.core.events.repos.*;
-import com.yummynoodlebar.rest.domain.Repo;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodlebar.core.events.repos.AllReposEvent;
+import com.yummynoodlebar.core.events.repos.RepoDetails;
+import com.yummynoodlebar.rest.domain.Repo;
 
 //TODOCUMENT.  Use of test data fixture classes is considered good practice.
 /*
@@ -16,38 +16,34 @@ import java.util.UUID;
  For anything more esoteric, create a new fixture in the test class.
  */
 public class RestDataFixture {
-  public static final String YUMMY_ITEM = "yummy1";
 
-  public static AllReposEvent allRepos() {
-    List<RepoDetails> repos = new ArrayList<RepoDetails>();
+	public static AllReposEvent allRepos() {
+		List<RepoDetails> repos = new ArrayList<RepoDetails>();
 
-    repos.add(standardRepoDetails());
-    repos.add(standardRepoDetails());
-    repos.add(standardRepoDetails());
+		repos.add(standardRepoDetails());
+		repos.add(standardRepoDetails());
+		repos.add(standardRepoDetails());
 
-    return new AllReposEvent(repos);
-  }
+		return new AllReposEvent(repos);
+	}
 
-  public static Repo standardRepo() {
-    Repo repo = new Repo();
+	public static Repo standardRepo() {
+		Repo repo = new Repo();
 
-    repo.setItems(Collections.singletonMap(YUMMY_ITEM, 12));
+		return repo;
+	}
 
-    return repo;
-  }
+	public static RepoDetails customKeyRepoDetails(RepoId key) {
+		RepoDetails repodetails = new RepoDetails();
+		repodetails.setId(key.get());
+		return repodetails;
+	}
 
-  public static RepoDetails customKeyRepoDetails(UUID key) {
-    RepoDetails repodetails = new RepoDetails(key);
+	public static RepoDetails standardRepoDetails() {
+		return customKeyRepoDetails(new RepoId(444L));// created 444 random
+	}
 
-    repodetails.setRepoItems(Collections.singletonMap(YUMMY_ITEM, 12));
-
-    return repodetails;
-  }
-  public static RepoDetails standardRepoDetails() {
-    return customKeyRepoDetails(UUID.randomUUID());
-  }
-
-  public static String standardRepoJSON() {
-    return "{ \"items\": { \"yummy1\": 12, \"yummy15\": 42 } }";
-  }
+	public static String standardRepoJSON() {
+		return "{ \"language\":  \"java\"}";
+	}
 }

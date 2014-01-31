@@ -1,9 +1,5 @@
 package com.yummynoodlebar.rest.controller;
 
-import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,52 +11,53 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.repos.CreateRepoEvent;
 import com.yummynoodlebar.core.events.repos.DeleteRepoEvent;
 import com.yummynoodlebar.core.events.repos.RepoCreatedEvent;
 import com.yummynoodlebar.core.events.repos.RepoDeletedEvent;
 import com.yummynoodlebar.core.services.RepoService;
+import com.yummynoodlebar.rest.domain.CopyOfRepo;
 import com.yummynoodlebar.rest.domain.Repo;
 
 @Controller
-@RequestMapping("/aggregators/repos")
+@RequestMapping("/api/repos")
 public class RepositoryCommandsController {
 
-    private static Logger LOG = LoggerFactory.getLogger(RepositoryCommandsController.class);
+	@Autowired
+	private RepoService repoService;
 
-    @Autowired
-    private RepoService repoService;
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Repo> createRepo(@RequestBody Repo repo,
+			UriComponentsBuilder builder) {
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Repo> createRepo(@RequestBody Repo repo, UriComponentsBuilder builder) {
+		RepoCreatedEvent repoCreated = null;
+		repoCreated = repoService.createRepo(new CreateRepoEvent(repo.toRepoDetails()));
+		Repo newRepo = new Repo(repoCreated.getDetails());
 
-        RepoCreatedEvent repoCreated = repoService.createRepo(new CreateRepoEvent(repo.toRepoDetails()));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(builder.path("/api/repos/{id}")
+				.buildAndExpand(repoCreated.getNewRepoKey()).toUri());
 
-        Repo newRepo = Repo.fromRepoDetails(repoCreated.getDetails());
+		return new ResponseEntity<Repo>(newRepo, new HttpHeaders(), HttpStatus.CREATED);
+	}
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(
-                builder.path("/aggregators/repos/{id}")
-                        .buildAndExpand(repoCreated.getNewRepoKey().toString()).toUri());
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public ResponseEntity<Repo> cancelRepo(@PathVariable String id) {
 
-        return new ResponseEntity<Repo>(newRepo, headers, HttpStatus.CREATED);
-    }
+		RepoDeletedEvent repoDeleted = repoService
+				.deleteRepo(new DeleteRepoEvent(RepoId.fromString(id)));
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-    public ResponseEntity<Repo> cancelRepo(@PathVariable String id) {
+		if (!repoDeleted.isEntityFound()) {
+			return new ResponseEntity<Repo>(HttpStatus.NOT_FOUND);
+		}
 
-        RepoDeletedEvent repoDeleted = repoService.deleteRepo(new DeleteRepoEvent(UUID.fromString(id)));
+		Repo repo = new Repo(repoDeleted.getDetails());
 
-        if (!repoDeleted.isEntityFound()) {
-            return new ResponseEntity<Repo>(HttpStatus.NOT_FOUND);
-        }
+		if (repoDeleted.isDeletionCompleted()) {
+			return new ResponseEntity<Repo>(repo, HttpStatus.OK);
+		}
 
-        Repo repo = Repo.fromRepoDetails(repoDeleted.getDetails());
-
-        if (repoDeleted.isDeletionCompleted()) {
-            return new ResponseEntity<Repo>(repo, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<Repo>(repo, HttpStatus.FORBIDDEN);
-    }
+		return new ResponseEntity<Repo>(repo, HttpStatus.FORBIDDEN);
+	}
 }

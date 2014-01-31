@@ -1,6 +1,7 @@
-package com.yummynoodlebar.core.domain;
+package com.yummynoodelbar.common;
 
 import java.util.Set;
+
 
 public class RepoStatusHistory {
 

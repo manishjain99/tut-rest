@@ -1,25 +1,25 @@
 package com.yummynoodlebar.core.domain.fixtures;
 
-import com.yummynoodlebar.core.domain.User;
-import com.yummynoodlebar.core.domain.Repo;
+import org.eclipse.egit.github.core.User;
+
+import com.yummynoodlebar.core.domain.RepoCore;
 import com.yummynoodlebar.core.events.repos.RepoDetails;
 
 public class RepoFixtures {
 
-  public static final String YUMMY_ITEM = "yummy_core";
-
-  public static Repo standardRepo() {
-    Repo repo = new Repo();
+  public static RepoCore createStandardRepo() {
+    RepoCore repo = new RepoCore();
+    repo.setOwner(createStandardUser());
     return repo;
   }
 
   /*
    * Twin of the above, to improve readability
    */
-  public static RepoDetails standardRepoDetails() {
-    return standardRepo().toRepoDetails();
+  public static RepoDetails createStandardRepoDetails() {
+    return createStandardRepo().toRepoDetails();
   }
-  public static User createStandardOwner(){
+  public static User createStandardUser(){
 	  User owner = new User();
 	  owner.setId(22);
 	  owner.setName("Manish");

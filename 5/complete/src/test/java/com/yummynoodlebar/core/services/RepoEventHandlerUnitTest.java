@@ -10,12 +10,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.UUID;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yummynoodlebar.core.domain.Repo;
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodlebar.core.domain.RepoCore;
 import com.yummynoodlebar.core.events.repos.CreateRepoEvent;
 import com.yummynoodlebar.core.events.repos.DeleteRepoEvent;
 import com.yummynoodlebar.core.events.repos.RepoDeletedEvent;
@@ -24,89 +23,93 @@ import com.yummynoodlebar.core.repository.ReposMemoryRepository;
 
 public class RepoEventHandlerUnitTest {
 
-  RepoEventHandler uut;
-  ReposMemoryRepository mockReposMemoryRepository;
+	RepoEventHandler uut;
+	ReposMemoryRepository mockReposMemoryRepository;
 
-  @Before
-  public void setupUnitUnderTest() {
-    mockReposMemoryRepository = mock(ReposMemoryRepository.class);
-    uut = new RepoEventHandler(mockReposMemoryRepository);
-  }
+	@Before
+	public void setupUnitUnderTest() {
+		mockReposMemoryRepository = mock(ReposMemoryRepository.class);
+		uut = new RepoEventHandler(mockReposMemoryRepository);
+	}
 
-  @Test
-  public void addANewRepoToTheSystem() {
+	@Test
+	public void addANewRepoToTheSystem() {
 
-    when(mockReposMemoryRepository.save(any(Repo.class))).thenReturn(new Repo());
+		when(mockReposMemoryRepository.save(any(RepoCore.class))).thenReturn(
+				new RepoCore());
 
-    CreateRepoEvent ev = new CreateRepoEvent(new RepoDetails());
+		CreateRepoEvent ev = new CreateRepoEvent(new RepoDetails());
 
-    uut.createRepo(ev);
+		uut.createRepo(ev);
 
-    verify(mockReposMemoryRepository).save(any(Repo.class));
-    verifyNoMoreInteractions(mockReposMemoryRepository);
-  }
+		verify(mockReposMemoryRepository).save(any(RepoCore.class));
+		verifyNoMoreInteractions(mockReposMemoryRepository);
+	}
 
-  @Test
-  public void addTwoNewReposToTheSystem() {
+	@Test
+	public void addTwoNewReposToTheSystem() {
 
-    when(mockReposMemoryRepository.save(any(Repo.class))).thenReturn(new Repo());
+		when(mockReposMemoryRepository.save(any(RepoCore.class))).thenReturn(
+				new RepoCore());
 
-    CreateRepoEvent ev = new CreateRepoEvent(new RepoDetails());
+		CreateRepoEvent ev = new CreateRepoEvent(new RepoDetails());
 
-    uut.createRepo(ev);
-    uut.createRepo(ev);
+		uut.createRepo(ev);
+		uut.createRepo(ev);
 
-    verify(mockReposMemoryRepository, times(2)).save(any(Repo.class));
-    verifyNoMoreInteractions(mockReposMemoryRepository);
-  }
+		verify(mockReposMemoryRepository, times(2)).save(any(RepoCore.class));
+		verifyNoMoreInteractions(mockReposMemoryRepository);
+	}
 
-  @Test
-  public void removeAnRepoFromTheSystemFailsIfNotPresent() {
-    UUID key = UUID.randomUUID();
+	@Test
+	public void removeAnRepoFromTheSystemFailsIfNotPresent() {
+		RepoId key = RepoId.randomRepoId();
 
-    when(mockReposMemoryRepository.findById(key)).thenReturn(null);
+		when(mockReposMemoryRepository.findById(key)).thenReturn(null);
 
+	}
 
-  }
+	@Test
+	public void removeAnRepoFromTheSystemFailsIfNotPermitted() {
+		RepoId key = RepoId.randomRepoId();
 
-  @Test
-  public void removeAnRepoFromTheSystemFailsIfNotPermitted() {
-    UUID key = UUID.randomUUID();
+		RepoCore repo = new RepoCore() {
 
-    Repo repo = new Repo() {
-      @Override
-      public boolean canBeDeleted() {
-        return false;
-      }
-    };
+			private static final long serialVersionUID = 1L;
 
-    when(mockReposMemoryRepository.findById(key)).thenReturn(repo);
+			@Override
+			public boolean canBeDeleted() {
+				return false;
+			}
+		};
 
-    DeleteRepoEvent ev = new DeleteRepoEvent(key);
+		when(mockReposMemoryRepository.findById(key)).thenReturn(repo);
 
-    RepoDeletedEvent repoDeletedEvent = uut.deleteRepo(ev);
+		DeleteRepoEvent ev = new DeleteRepoEvent(key);
 
-    verify(mockReposMemoryRepository, never()).delete(ev.getKey());
+		RepoDeletedEvent repoDeletedEvent = uut.deleteRepo(ev);
 
-    assertTrue(repoDeletedEvent.isEntityFound());
-    assertFalse(repoDeletedEvent.isDeletionCompleted());
-  }
+		verify(mockReposMemoryRepository, never()).delete(ev.getKey());
 
-  @Test
-  public void removeAnRepoFromTheSystemWorksIfExists() {
+		assertTrue(repoDeletedEvent.isEntityFound());
+		assertFalse(repoDeletedEvent.isDeletionCompleted());
+	}
 
-    UUID key = UUID.randomUUID();
-    Repo repo = new Repo();
+	@Test
+	public void removeAnRepoFromTheSystemWorksIfExists() {
 
-    when(mockReposMemoryRepository.findById(key)).thenReturn(repo);
+		RepoId key = RepoId.randomRepoId();
+		RepoCore repo = new RepoCore();
 
-    DeleteRepoEvent ev = new DeleteRepoEvent(key);
+		when(mockReposMemoryRepository.findById(key)).thenReturn(repo);
 
-    RepoDeletedEvent repoDeletedEvent = uut.deleteRepo(ev);
+		DeleteRepoEvent ev = new DeleteRepoEvent(key);
 
-    verify(mockReposMemoryRepository).delete(ev.getKey());
+		RepoDeletedEvent repoDeletedEvent = uut.deleteRepo(ev);
 
-    assertTrue(repoDeletedEvent.isEntityFound());
-    assertTrue(repoDeletedEvent.isDeletionCompleted());
-  }
+		verify(mockReposMemoryRepository).delete(ev.getKey());
+
+		assertTrue(repoDeletedEvent.isEntityFound());
+		assertTrue(repoDeletedEvent.isDeletionCompleted());
+	}
 }

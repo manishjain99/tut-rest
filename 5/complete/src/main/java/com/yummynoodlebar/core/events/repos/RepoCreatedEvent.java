@@ -1,24 +1,36 @@
 package com.yummynoodlebar.core.events.repos;
 
-import com.yummynoodlebar.core.events.CreatedEvent;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.UUID;
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodelbar.common.RepoStatus;
+import com.yummynoodlebar.core.events.CreatedEvent;
 
 public class RepoCreatedEvent extends CreatedEvent {
 
-  private final UUID newRepoKey;
+  private final RepoId newRepoKey;
   private final RepoDetails details;
+  private final List<RepoStatus> statusHistory ;
+  
+  public RepoCreatedEvent(){
+	  throw new RuntimeException("We do not allow for emptyEvent, use different constrctor");
+  }
 
-  public RepoCreatedEvent(final UUID newRepoKey, final RepoDetails details) {
+  public RepoCreatedEvent(RepoId newRepoKey, RepoDetails details) {
     this.newRepoKey = newRepoKey;
     this.details = details;
+    this.statusHistory = details.getStatusHistory();
   }
 
   public RepoDetails getDetails() {
     return details;
   }
 
-  public UUID getNewRepoKey() {
-    return newRepoKey;
+  public long getNewRepoKey() {
+    return newRepoKey.get();
+  }
+  public List<RepoStatus> getStatusHistory(){
+	  return Collections.unmodifiableList(statusHistory);
   }
 }

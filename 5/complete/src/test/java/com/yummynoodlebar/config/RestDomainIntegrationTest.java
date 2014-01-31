@@ -1,6 +1,11 @@
 package com.yummynoodlebar.config;
 
-import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
+import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardRepoJSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,13 +17,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardRepoJSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //TODOCUMENT We have already asserted the correctness of the collaboration.
 //This is to check that the wiring in MVCConfig works.
@@ -45,7 +43,7 @@ public class RestDomainIntegrationTest {
   @Test
   public void addANewRepoToTheSystem() throws Exception  {
     this.mockMvc.perform(
-            post("/aggregators/repos")
+            post("/api/repos")
                     .content(standardRepoJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
@@ -53,11 +51,10 @@ public class RestDomainIntegrationTest {
             .andExpect(status().isCreated());
 
     this.mockMvc.perform(
-            get("/aggregators/repos")
+            get("/api/repos/0")
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].items['" + RestDataFixture.YUMMY_ITEM + "']").value(12));
+            .andExpect(status().isOk());
 
   }
 }

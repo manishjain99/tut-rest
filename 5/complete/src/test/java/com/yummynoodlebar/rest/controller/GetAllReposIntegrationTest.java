@@ -1,8 +1,13 @@
 package com.yummynoodlebar.rest.controller;
 
-import com.yummynoodlebar.core.events.repos.RequestAllReposEvent;
-import com.yummynoodlebar.core.services.RepoService;
-import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
+import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.allRepos;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -11,14 +16,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.allRepos;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import com.yummynoodlebar.core.events.repos.RequestAllReposEvent;
+import com.yummynoodlebar.core.services.RepoService;
 
 
 public class GetAllReposIntegrationTest {
@@ -44,10 +43,9 @@ public class GetAllReposIntegrationTest {
   public void thatGetReposRendersAsJson() throws Exception {
 
     this.mockMvc.perform(
-            get("/aggregators/repos")
+            get("/api/repos")
               .accept(MediaType.APPLICATION_JSON))
               .andDo(print())
-              .andExpect(status().isOk())
-              .andExpect(jsonPath("$[0].items['" + RestDataFixture.YUMMY_ITEM + "']").value(12));
+              .andExpect(status().isOk());
   }
 }

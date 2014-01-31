@@ -41,10 +41,9 @@ public class RepoTests {
     assertTrue(path.startsWith("/aggregators/repos/"));
     Repo repo = entity.getBody();
 
-    System.out.println ("The Repo ID is " + repo.getKey());
+    System.out.println ("The Repo ID is " + repo.getRepoId());
     System.out.println ("The Location is " + entity.getHeaders().getLocation());
 
-    assertEquals(2, repo.getItems().size());
   }
   // {!end newWay}
 

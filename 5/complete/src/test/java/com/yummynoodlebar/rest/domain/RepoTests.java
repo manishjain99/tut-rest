@@ -1,7 +1,7 @@
 package com.yummynoodlebar.rest.domain;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -16,24 +16,16 @@ public class RepoTests {
 
     RepoDetails details = repo.toRepoDetails();
 
-    assertEquals(repo.getKey(), details.getKey());
-    assertEquals(repo.getDateTimeOfSubmission(), details.getDateTimeOfSubmission());
-    assertEquals(details.getRepoItems().size(), details.getRepoItems().size());
-    assertTrue(details.getRepoItems().containsKey(RestDataFixture.YUMMY_ITEM));
-    assertEquals(details.getRepoItems().get(RestDataFixture.YUMMY_ITEM), repo.getItems().get(RestDataFixture.YUMMY_ITEM));
+    assertEquals("", repo.getId(), details.getId());
   }
 
   @Test
   public void thatRepoCanConvertFromRepoDetails() {
     RepoDetails details = RestDataFixture.standardRepoDetails();
 
-    Repo repo = Repo.fromRepoDetails(details);
+    Repo repo = new Repo(details);
 
-    assertEquals(repo.getKey(), details.getKey());
-    assertEquals(repo.getDateTimeOfSubmission(), details.getDateTimeOfSubmission());
-    assertEquals(repo.getItems().size(), details.getRepoItems().size());
-    assertTrue(repo.getItems().containsKey(RestDataFixture.YUMMY_ITEM));
-    assertEquals(details.getRepoItems().get(RestDataFixture.YUMMY_ITEM), repo.getItems().get(RestDataFixture.YUMMY_ITEM));
+    assertEquals(repo.getRepoId(), details.getRepoId());
   }
 
 }

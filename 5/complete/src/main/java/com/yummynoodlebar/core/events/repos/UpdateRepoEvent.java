@@ -1,20 +1,19 @@
 package com.yummynoodlebar.core.events.repos;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.UpdateEvent;
-
-import java.util.UUID;
 
 public class UpdateRepoEvent extends UpdateEvent {
 
-  private UUID key;
+  private RepoId key;
   private RepoDetails repoDetails;
 
-  public UpdateRepoEvent(UUID key, RepoDetails repoDetails) {
+  public UpdateRepoEvent(RepoId key, RepoDetails repoDetails) {
     this.key = key;
     this.repoDetails = repoDetails;
   }
 
-  public UUID getKey() {
+  public RepoId getKey() {
     return key;
   }
 

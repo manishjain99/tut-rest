@@ -1,7 +1,15 @@
 package com.yummynoodlebar.rest.controller;
 
-import com.yummynoodlebar.core.events.repos.RequestRepoDetailsEvent;
-import com.yummynoodlebar.core.services.RepoService;
+import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.repoDetailsEvent;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,15 +20,9 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.UUID;
-
-import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.repoDetailsEvent;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodlebar.core.events.repos.RequestRepoDetailsEvent;
+import com.yummynoodlebar.core.services.RepoService;
 
 
 public class ViewRepoXmlIntegrationTest {
@@ -33,7 +35,7 @@ public class ViewRepoXmlIntegrationTest {
   @Mock
   RepoService repoService;
 
-  UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+  RepoId repoId = new RepoId(55);
 
   @Before
   public void setup() {
@@ -48,29 +50,29 @@ public class ViewRepoXmlIntegrationTest {
   public void thatViewRepoRendersXMLCorrectly() throws Exception {
 
     when(repoService.requestRepoDetails(any(RequestRepoDetailsEvent.class))).thenReturn(
-            repoDetailsEvent(key));
+            repoDetailsEvent(repoId));
 
     this.mockMvc.perform(
-            get("/aggregators/repos/{id}", key.toString())
+            get("/api/repos/{id}", repoId.toString())
                     .accept(MediaType.TEXT_XML))
             .andDo(print())
             .andExpect(content().contentType(MediaType.TEXT_XML))
-            .andExpect(xpath("/repo/key").string(key.toString()));
+            .andExpect(xpath("/repo/id").string(repoId.toString()));
   }
 
   @Test
   public void thatViewRepoRendersJsonCorrectly() throws Exception {
 
     when(repoService.requestRepoDetails(any(RequestRepoDetailsEvent.class))).thenReturn(
-            repoDetailsEvent(key));
+            repoDetailsEvent(repoId));
 
     //TODOCUMENT JSON Path in use here (really like this)
 
     this.mockMvc.perform(
-            get("/aggregators/repos/{id}", key.toString())
+            get("/api/repos/{id}", repoId.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.key").value(key.toString()));
+            .andExpect(jsonPath("$.id").value(55));//TODO, use repoId.get but that throws error due to Long to Int conversion
   }
 }

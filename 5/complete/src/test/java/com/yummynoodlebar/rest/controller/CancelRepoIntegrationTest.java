@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-import java.util.UUID;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -24,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.repos.DeleteRepoEvent;
 import com.yummynoodlebar.core.services.RepoService;
 
@@ -37,7 +37,7 @@ public class CancelRepoIntegrationTest {
   @Mock
   RepoService repoService;
 
-  UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+  RepoId key = RepoId.fromString("55");
 
   @Before
   public void setup() {
@@ -56,7 +56,7 @@ public class CancelRepoIntegrationTest {
                     repoDeleted(key));
 
     this.mockMvc.perform(
-            delete("/aggregators/repos/{id}", key.toString())
+            delete("/api/repos/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk());
@@ -89,7 +89,7 @@ public class CancelRepoIntegrationTest {
                     repoDeletedFailed(key));
 
     this.mockMvc.perform(
-            delete("/aggregators/repos/{id}", key.toString())
+            delete("/api/repos/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isForbidden());

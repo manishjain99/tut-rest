@@ -5,44 +5,44 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import com.yummynoodlebar.core.domain.Repo;
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodlebar.core.domain.RepoCore;
 
 public class ReposMemoryRepository implements RepoRepository {
 
-  private Map<UUID, Repo> repos;
+  private Map<RepoId, RepoCore> repos;
 
-  public ReposMemoryRepository(final Map<UUID, Repo> repos) {
+  public ReposMemoryRepository(final Map<RepoId, RepoCore> repos) {
     this.repos = Collections.unmodifiableMap(repos);
   }
 
   @Override
-  public synchronized Repo save(Repo repo) {
+  public synchronized RepoCore save(RepoCore repo) {
 
-    Map<UUID, Repo> modifiableRepos = new HashMap<UUID, Repo>(repos);
-    modifiableRepos.put(repo.getKey(), repo);
+    Map<RepoId, RepoCore> modifiableRepos = new HashMap<RepoId, RepoCore>(repos);
+    modifiableRepos.put(repo.getRepoId(), repo);
     this.repos = Collections.unmodifiableMap(modifiableRepos);
 
     return repo;
   }
 
   @Override
-  public synchronized void delete(UUID key) {
+  public synchronized void delete(RepoId key) {
     if (repos.containsKey(key)) {
-      Map<UUID, Repo> modifiableRepos = new HashMap<UUID, Repo>(repos);
+      Map<RepoId, RepoCore> modifiableRepos = new HashMap<RepoId, RepoCore>(repos);
       modifiableRepos.remove(key);
       this.repos = Collections.unmodifiableMap(modifiableRepos);
     }
   }
 
   @Override
-  public Repo findById(UUID key) {
+  public RepoCore findById(RepoId key) {
     return repos.get(key);
   }
 
   @Override
-  public List<Repo> findAll() {
-    return Collections.unmodifiableList(new ArrayList<Repo>(repos.values()));
+  public List<RepoCore> findAll() {
+    return Collections.unmodifiableList(new ArrayList<RepoCore>(repos.values()));
   }
 }

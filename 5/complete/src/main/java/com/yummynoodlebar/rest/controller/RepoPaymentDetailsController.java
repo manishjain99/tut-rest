@@ -1,12 +1,13 @@
 package com.yummynoodlebar.rest.controller;
 
-import com.yummynoodlebar.core.services.RepoService;
-import com.yummynoodlebar.rest.domain.PaymentDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.yummynoodlebar.core.services.RepoService;
+import com.yummynoodlebar.rest.domain.PaymentDetails;
 
 @Controller
 @RequestMapping("/aggregators/repos/{id}/paymentdetails")

@@ -1,18 +1,17 @@
 package com.yummynoodlebar.core.events.repos;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.DeleteEvent;
-
-import java.util.UUID;
 
 public class DeleteRepoEvent extends DeleteEvent {
 
-  private final UUID key;
+  private final RepoId key;
 
-  public DeleteRepoEvent(final UUID key) {
+  public DeleteRepoEvent(final RepoId key) {
     this.key = key;
   }
 
-  public UUID getKey() {
+  public RepoId getKey() {
     return key;
   }
 }

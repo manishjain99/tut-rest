@@ -1,17 +1,16 @@
 package com.yummynoodlebar.core.events.repos;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.events.RequestReadEvent;
 
-import java.util.UUID;
-
 public class RequestRepoDetailsEvent extends RequestReadEvent {
-  private UUID key;
+  private RepoId key;
 
-  public RequestRepoDetailsEvent(UUID key) {
+  public RequestRepoDetailsEvent(RepoId key) {
     this.key = key;
   }
 
-  public UUID getKey() {
+  public RepoId getKey() {
     return key;
   }
 }

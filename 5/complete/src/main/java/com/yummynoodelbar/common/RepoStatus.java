@@ -1,4 +1,4 @@
-package com.yummynoodlebar.core.domain;
+package com.yummynoodelbar.common;
 
 import java.util.Date;
 

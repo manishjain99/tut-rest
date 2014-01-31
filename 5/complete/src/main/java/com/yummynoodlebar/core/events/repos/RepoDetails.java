@@ -1,60 +1,32 @@
 package com.yummynoodlebar.core.events.repos;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
-import com.yummynoodlebar.core.domain.User;
+import org.eclipse.egit.github.core.Repository;
 
-public class RepoDetails {
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodelbar.common.RepoStatus;
 
-	private UUID key;
-	private Date dateTimeOfSubmission;
-	private Map<String, Integer> repoItems;
-	private User owner;
-
-	public RepoDetails() {
-		key = null;
+public class RepoDetails extends Repository {
+	private static final long serialVersionUID = 1L;
+	private List<RepoStatus> statusHistory = new ArrayList<RepoStatus>();
+	
+	public RepoId getRepoId(){
+		return new RepoId(getId());
 	}
-
-	public RepoDetails(UUID key) {
-		this.key = key;
+	public void setStatus(RepoStatus status){
+		statusHistory.add(status);
 	}
-
-	public Date getDateTimeOfSubmission() {
-		return this.dateTimeOfSubmission;
+	public RepoStatus getStatus(){
+		if(statusHistory.size() ==0) return new RepoStatus(new Date(), "No Status set yet");
+		RepoStatus lastStatus = statusHistory.get(statusHistory.size()-1);
+		return new RepoStatus(new Date(),lastStatus.getStatus());
 	}
+	public List<RepoStatus> getStatusHistory() {
+		return Collections.unmodifiableList(statusHistory);
 
-	public User getOwner() {
-		return owner;
-	}
-
-	public void setDateTimeOfSubmission(Date dateTimeOfSubmission) {
-		this.dateTimeOfSubmission = dateTimeOfSubmission;
-	}
-
-	public Map<String, Integer> getRepoItems() {
-		return repoItems;
-	}
-
-	public void setRepoItems(Map<String, Integer> repoItems) {
-		if (repoItems == null) {
-			this.repoItems = Collections.emptyMap();
-		} else {
-			this.repoItems = Collections.unmodifiableMap(repoItems);
-		}
-	}
-
-	public UUID getKey() {
-		return key;
-	}
-
-	public void setKey(UUID key) {
-		this.key = key;
-	}
-
-	public void setOwner(User owner) {
-		this.owner = owner;
 	}
 }

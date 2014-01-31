@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.yummynoodelbar.common.RepoId;
 import com.yummynoodlebar.core.domain.fixtures.RepoFixtures;
 import com.yummynoodlebar.core.repository.ReposMemoryRepository;
 
@@ -19,7 +19,7 @@ public class ReposUnitTest {
 
   @Before
   public void setupUnitUnderTest() {
-    Map<UUID, Repo> emptyRepoList = new HashMap<UUID, Repo>();
+    Map<RepoId, RepoCore> emptyRepoList = new HashMap<RepoId, RepoCore>();
     uut = new ReposMemoryRepository(emptyRepoList);
   }
 
@@ -28,7 +28,7 @@ public class ReposUnitTest {
 
     assertEquals(0, uut.findAll().size());
 
-    uut.save(RepoFixtures.standardRepo());
+    uut.save(RepoFixtures.createStandardRepo());
 
     assertEquals(1, uut.findAll().size());
   }
@@ -36,9 +36,9 @@ public class ReposUnitTest {
   @Test
   public void removeASingleRepo() {
 
-    UUID key = UUID.randomUUID();
+    RepoId key = RepoId.randomRepoId();
 
-    uut = new ReposMemoryRepository(Collections.singletonMap(key, RepoFixtures.standardRepo()));
+    uut = new ReposMemoryRepository(Collections.singletonMap(key, RepoFixtures.createStandardRepo()));
 
     assertEquals(1, uut.findAll().size());
 

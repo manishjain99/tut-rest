@@ -1,7 +1,17 @@
 package com.yummynoodlebar.rest.controller;
 
-import com.yummynoodlebar.core.events.repos.RequestRepoStatusEvent;
-import com.yummynoodlebar.core.services.RepoService;
+import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.repoStatus;
+import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.repoStatusNotFound;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,15 +22,9 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.UUID;
-
-import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+import com.yummynoodelbar.common.RepoId;
+import com.yummynoodlebar.core.events.repos.RequestRepoStatusEvent;
+import com.yummynoodlebar.core.services.RepoService;
 
 public class RepoStatusIntegrationTest {
 
@@ -32,7 +36,7 @@ public class RepoStatusIntegrationTest {
   @Mock
   RepoService repoService;
 
-  UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+  RepoId key = RepoId.fromString("88");
 
   @Before
   public void setup() {
@@ -63,7 +67,7 @@ public class RepoStatusIntegrationTest {
             repoStatus(key, "Cooking"));
 
     this.mockMvc.perform(
-            get("/aggregators/repos/{id}/status", key.toString())
+            get("/api/repos/{id}/status", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk());
@@ -76,10 +80,10 @@ public class RepoStatusIntegrationTest {
             repoStatus(key, "Cooking"));
 
     this.mockMvc.perform(
-            get("/aggregators/repos/{id}/status", key.toString())
+            get("/api/repos/{id}/status", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.repoId").value(key.toString()))
+            .andDo(print())
             .andExpect(jsonPath("$.status").value("Cooking"));
   }
 
@@ -90,11 +94,10 @@ public class RepoStatusIntegrationTest {
             repoStatus(key, "Cooking"));
 
     this.mockMvc.perform(
-            get("/aggregators/repos/{id}/status", key.toString())
+            get("/api/repos/{id}/status", key.toString())
                     .accept(MediaType.TEXT_XML))
             .andDo(print())
             .andExpect(content().contentType(MediaType.TEXT_XML))
-            .andExpect(xpath("/repoStatus/repoId").string(key.toString()))
             .andExpect(xpath("/repoStatus/status").string("Cooking"));
   }
 }

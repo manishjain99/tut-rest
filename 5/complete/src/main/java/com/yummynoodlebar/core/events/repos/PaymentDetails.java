@@ -1,11 +1,12 @@
 package com.yummynoodlebar.core.events.repos;
 
 import java.util.Date;
-import java.util.UUID;
+
+import com.yummynoodelbar.common.RepoId;
 
 public class PaymentDetails {
 
-  private UUID key;
+  private RepoId key;
   private Date dateTimeOfSubmission;
 
 
@@ -14,7 +15,7 @@ public class PaymentDetails {
     key = null;
   }
 
-  public PaymentDetails(UUID key) {
+  public PaymentDetails(RepoId key) {
     this.key = key;
   }
 
@@ -26,11 +27,11 @@ public class PaymentDetails {
     this.dateTimeOfSubmission = dateTimeOfSubmission;
   }
 
-  public UUID getKey() {
+  public RepoId getKey() {
     return key;
   }
 
-  public void setKey(UUID key) {
+  public void setKey(RepoId key) {
     this.key = key;
   }
 }
